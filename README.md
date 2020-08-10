@@ -14,3 +14,6 @@
 ### Consistency
 ### YAGNI (You ain’t gonna need it!)
 ### Refactoring
+## Functional Programming
+### Avoid Side Effects
+#### Pure Functions
