@@ -1,5 +1,28 @@
 # General Coding Best Practices
 
+- [General Coding Best Practices](#general-coding-best-practices)
+	- [Structured Programming](#structured-programming)
+		- [Control Structures](#control-structures)
+			- [Sequence](#sequence)
+			- [Conditions](#conditions)
+			- [Iterations](#iterations)
+		- [Blocks](#blocks)
+		- [Subroutines (procedures, functions)](#subroutines-procedures-functions)
+			- [Function](#function)
+		- [Recursion](#recursion)
+			- [Recursion and Stack](#recursion-and-stack)
+	- [Clean Code](#clean-code)
+		- [DRY (Don’t Repeat Yourself)](#dry-dont-repeat-yourself)
+		- [Code Smells](#code-smells)
+		- [Consistency](#consistency)
+		- [YAGNI (You ain’t gonna need it!)](#yagni-you-aint-gonna-need-it)
+		- [Refactoring](#refactoring)
+	- [Functional Programming](#functional-programming)
+		- [Avoid Side Effects](#avoid-side-effects)
+			- [Pure Functions](#pure-functions)
+	- [References](#references)
+
+
 ## Structured Programming
 [**Structured Programming**][1] - is a programming paradigm, designed towards improving program code through usage of control structures, such as sequential execution of statements or subroutines, conditional statements, iterations (loops), blocks, subroutines, and recursion. The term was coined by [Edgar W. Dijkstra][4].
 ### Control Structures
@@ -77,7 +100,7 @@ int recursive_factorial(const int n)
 
 One or more statements executed based on the state of the program Implies usage of conditional statements such as:
 
-```c
+```typescript
 if (condition_a) {
 	...
 } else if (condition_b) {
@@ -93,10 +116,10 @@ Most of the programming languages have similar keywords for conditional statemen
 
 [Logical operators][10] such as *or* (**||**), *and* (**&&**), *not* (**!**) are used for creating conditions.
 
-Sometimes we overcomplicate conditions. Here is an example in [**Java** language][12], taken from [Wellesley College's CS course][11]:
+Sometimes we over-complicate conditions. Here is an example in [**Java** language][12], taken from [Wellesley College's CS course][11]:
 
-```java
-public boolean hasWallsOnBothSides() {
+```typescript
+const hasWallsOnBothSides = () => {
   if (isWallToLeft()) {
     if (isWallToRight()) {
       return true;
@@ -111,8 +134,8 @@ public boolean hasWallsOnBothSides() {
 
 This can simplified to this:
 
-```java
-public boolean hasWallsOnBothSides() {
+```typescript
+const hasWallsOnBothSides = () => {
   if (isWallToLeft()) {
     return isWallToRight();
   } else {
@@ -123,8 +146,8 @@ public boolean hasWallsOnBothSides() {
 
 And simplified further:
 
-```java
-public boolean hasWallsOnBothSides() {
+```typescript
+const hasWallsOnBothSides = () => {
   return isWallToLeft() && isWallToRight();
 }
 ```
@@ -213,47 +236,141 @@ Essentially, this function does the same thing as the previous one, but unlike t
 
 ### Recursion
 
-Recursion, in programming, is when function or procedure calls itself. For example, our factorial function:
+Recursion, in programming, is when function or procedure calls itself. For example, our factorial function (now in javascript):
 
-```c
-int recursive_factorial(const int n)
-{
-	if (n < 0)
+```typescript
+const recursiveFactorial = (number = 1) => {
+	if (number < 0)
 		return -1;
 
-	if (n == 0 || n == 1)
-		return 1;
-
-	return n * recursive_factorial(n - 1);
-}
+	if (number === 1 || number === 0)
+		return number;
+    
+    return number * recursiveFactorial(number - 1);
+};
 ```
 
 #### Recursion and Stack
 
-Each function or procedure call creates a stack entry, so each recursion creates stack entry as well. For example, if we would call our `recursiove_factorial` function with `4` as an argument, stack call would look like this:
+Each function or procedure call creates a stack entry, so each recursion creates stack entry as well. For example, if we would call our `recursiveFactorial` function with `4` as an argument, stack call would look like this:
 
-```
-recursive_factorial(4)
-	|- recursive_factorial(3)
-		|- recursive_factorial(2)
-			|- recursive_factorial(1)
+```typescript
+=> recursiveFactorial, number = 4
+	=> recursiveFactorial, number = 3
+		=> recursiveFactorial, number = 2
+			=> recursiveFactorial, number = 1
 
 ```
 
 In contrast, call of the `iterative_factorial` function with the same argument would produce single stack entry:
 
+```typescript
+=> iterativeFactorial, number = 4
 ```
-iterative_factorial(4)
-```
-## Clean Code
+## [Clean Code][15]
+
+> Non-redundant software code comprising of focussed task-specific modules and functions, written in a systematic manner so that another coder can easily interpret or modify it.
+
 ### DRY (Don’t Repeat Yourself)
+
+If you catch yourself writing same code, or slightly different one, more than once, then that code needs to become a subroutine:
+
+```typescript
+let value = 0;
+
+for (let i = 0; i < maxLimit; i++)
+	value *= i * 5;
+
+for (let i = 5; i < maxLimit - 1; i++)
+	value *= i * 5;
+```
+
+This can be refactored to this:
+
+```typescript
+const calcValue = (value: number, index: number) => value * (index * 5);
+
+let value = 0;
+
+for (let i = 0; i < maxLimit; i++)
+	value = calcValue(value, i)
+
+for (let i = 5; i < maxLimit - 1; i++)
+	value = calcValue(value, i)
+```
+
 ### Code Smells
+
+When you design any type of software, there is certain set of rules and idioms to follow based on your environment and language that you use. Throughout decades of software development, architecture and design patterns have evolved. They are meant to solve specific set of problems in the most efficient way.
+
+Sometimes, you are not aware of these rules, patterns, and idioms. You start to do it in your own way, which doesn't mean that it is bad. Your own way of doing things may, in fact, follow those rules, patterns, and idioms. But most of the time, your code starts to *smell*. Of course, digital text does not emit any kind of physical smell, but you start to have a feeling that something is wrong.
+
+And if you catch yourself having that feeling, than it is probably time tod study that problem more thoroughly and to look for a better solution.
+
 ### Consistency
+
+Consistency, both in code style and in general approach of solving problems.
+
+Nothing is more frustrating that to work with someone on your team who is not consistent in his programming. Bad indentation, alien naming convention for variables, and design patterns all over the place. This type of teammate produces unmaintainable codebase, which nor he, nor you understand.
+
+If you had a bad codebase, then it needs refactoring before you start building a *good* codebase on top of it.
+
 ### YAGNI (You ain’t gonna need it!)
+
+> I will create this utility class in case we need it...
+
+**YAGNI** - You ain't gonna need it!
+
+Stop building dead libraries out of your projects. Implement solutions only when you need them. Keep things simple when designing those solutions. Don't over-engineer your code to accommodate for every single scenario, consider only real world use cases, and keep line count to minimum. Goal is not to ship code, but to ship a product.
+
 ### Refactoring
+
+After many hours, days, and months of development, your project may start to look like a mess:
+  
+- inconsistent code style
+- duplicate code
+- bad variable and function names
+- *it smells so badly...*
+
+If that is the case, then it is time for the refactoring!
+
+Refactoring - is a process of improving existing code without change to its behavior.
+
+During refactoring, you solve previously mentioned problems without changing how your program works. Refactoring is not for the clients, but for the developers. Although it may improve performance of your program, that is not its goal.
+
+Simplest refactoring is renaming variables and functions to make clear what they are meant for. Example:
+
+```typescript
+const calc = (a: number, b: number, c: number) => {
+	return a + b - c;
+}
+```
+
+Versus:
+
+```typescript
+const calcSalary = (netIncome: number, bonusIncomes: number, taxes: number) {
+	return netIncome + bonusIncomes - taxes;
+}
+```
+
+Removing duplicate code by extracting it subroutines (procedures and functions) is another form of refactoring.
+
+Inconsistent code style includes bad variable and function naming, but it also refers to code indentation, column caps, file structure, and codebase structure.
+
 ## Functional Programming
+
+[**Functional programming**][13] - is programming paradigm, that is developed around concepts of [pure functions][17] and [data immutability][18]. Although it is not widely used in the modern software development, it is highly valuable as a practice that helps to in building robust systems.
+
 ### Avoid Side Effects
+
+One of the key elements of the functional programming is avoiding side effects. This is achieved through the usage pure functions and immutable data. It is worth noting that in the functional world, data is separated from the logic of the program, where in object oriented world, data is often mixed with the logic.
+
 #### Pure Functions
+
+Return value of a pure function depends only on its input arguments, and it always produces the same result for the same set of inputs. Pure functions minimize side affects produced by the program. General best practice is to use pure functions as much as possible. On top of that, because of their consistent nature, pure functions are easy to test with unit tests. 
+
+## References
 
 [1]: https://en.wikipedia.org/wiki/Structured_programming
 [2]: https://en.wikipedia.org/wiki/Goto
@@ -268,3 +385,27 @@ iterative_factorial(4)
 [11]: http://cs111.wellesley.edu/~cs111/archive/cs111_spring00/public_html/lectures/boolean-simplification.html
 [12]: https://en.wikipedia.org/wiki/Java_(programming_language)
 [13]: https://en.wikipedia.org/wiki/Functional_programming
+[14]: https://en.wikipedia.org/wiki/Robert_C._Martin
+[15]: https://en.wiktionary.org/wiki/clean_code
+[16]: https://en.wikipedia.org/wiki/Code_refactoring
+[17]: https://en.wikipedia.org/wiki/Pure_function
+[18]: https://en.wikipedia.org/wiki/Immutable_object
+
+* [Structured Programming, Wikipedia][1]
+* [Goto, Wikipedia][2]
+* [Conditional Jumps Instructions, Philadelphia University][3]
+* [Edsger W. Dijkstra, Wikipedia][4]
+* [C (programming language), Wikipedia][5]
+* [Fortran, Wikipedia][6]
+* [Anatomy of a goto fail, nakedsecurity.sophos.com][7]
+* [JavaScript - Labeled Statements, Mozilla Developers Network][8]
+* [Recursion (computer science), Wikipedia][9]
+* [Boolean Algebra, Wikipedia][10]
+* [Boolean Simplification, Wllesley Collage][11]
+* [Java (programming language), Wikipedia][12]
+* [Functional Programming, Wikipedia][13]
+* [Robert C. Martin, Wikipedia][14]
+* [Clean Code, Wiktionary][15]
+* [Code Refactoring, Wikipedia][16]
+* [Pure Function, Wikipedia][17]
+* [Immutable Object, Wikipedia][18]
