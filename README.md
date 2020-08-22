@@ -98,7 +98,7 @@ int recursive_factorial(const int n)
 
 #### Conditions
 
-One or more statements executed based on the state of the program Implies usage of conditional statements such as:
+One or more statements executed based on the state of the program. Implies usage of conditional statements such as:
 
 ```typescript
 if (condition_a) {
@@ -116,7 +116,7 @@ Most of the programming languages have similar keywords for conditional statemen
 
 [Logical operators][10] such as *or* (**||**), *and* (**&&**), *not* (**!**) are used for creating conditions.
 
-Sometimes we over-complicate conditions. Here is an example in [**Java** language][12], taken from [Wellesley College's CS course][11]:
+Sometimes we over-complicate conditions. Here is an example, originally written in [**Java** language][12], but converted to JavaScript for the purposes of this document, that is taken from [Wellesley College's CS course][11]:
 
 ```typescript
 const hasWallsOnBothSides = () => {
@@ -217,22 +217,40 @@ sayMyName('Jakub'); // Your name is Jakub
 
 Similar to mathematical function - accepts arguments and returns a result, just like an example before.
 
-There is a special type of functions, that are called *pure* functions. This term comes from the [Functional Programming][13]. These functions do not mutate their input arguments, they do not depend on the state of the program and they always produce the same result for the same input. For example:
+There is a special type of functions, that are called *pure* functions. This term comes from the [Functional Programming][13]. These functions do not mutate their input arguments, they do not depend on the state of the program, and they always produce the same result for the same input. For example:
 
 ```typescript
-const add = (a: number, b: number) => a + b;
+const sayHello = (person: string) => `Hello, ${person}!`;
+
+const addSayHelloToObject = (object: object) => ({
+    ...object,
+    sayHello,
+});
+
+const myObject = { name: 'Ozimandius' };
+
+console.log(addSayHelloToObject(myObject)); // { name: 'Ozimandius', sayHello }
+console.log(myObject); // { name: 'Ozimandius' }
 ```
 
-Return value of this function depends only on its input arguments. It does not mutate any values and does not depend on the state of the program. This function always accepts 2 number arguments, and it always returns their sum. So this function is pure. Here is an example of an impure function:
+> If you are not familiar with JavaScript or its [*destructuring assignment*][19] feature, here is the simple explanation of what is going on. `addSayHelloToObject` accepts one parameter - `object`, and it returns a new object (curly braces mean that this is a new instance of an object) that is composed of all properties of the input object + the `sayHello` method that is added to it.
+
+From the console logs, we can see that original object is not mutated after the function call. Return value of this function depends only on its input argument. This function always accepts single object parameter, and it always returns a new object with the `sayHello` method attached to it. So this function is pure. Here is an example of an impure `addSayHelloToObject` function:
 
 ```typescript
-const addImpure = (a: number, b: number) => {
-	a = a + b;
-	return a;
+const sayHello = (person: string) => `Hello, ${person}!`;
+
+const addSayHelloToObject = (object: object) => {
+	object.sayHello = sayHello;
 };
+
+const myObject = { name: 'Ozimandius' };
+
+console.log(addSayHelloToObject(myObject)); // *no output*
+console.log(myObject); // { name: 'Ozimandius', sayHello }
 ```
 
-Essentially, this function does the same thing as the previous one, but unlike the first function, this one mutates its first argument by adding the second argument to it. This may potentially lead to unexpected bugs, because this function changes value of the first argument, which may be later referenced in some other part of the program.
+Essentially, this function does the same thing as the previous one, but unlike the first function, this one mutates its argument by directly attaching `sayHello` method to it. This may potentially lead to unexpected bugs.
 
 ### Recursion
 
@@ -390,6 +408,7 @@ Return value of a pure function depends only on its input arguments, and it alwa
 [16]: https://en.wikipedia.org/wiki/Code_refactoring
 [17]: https://en.wikipedia.org/wiki/Pure_function
 [18]: https://en.wikipedia.org/wiki/Immutable_object
+[19]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
 
 * [Structured Programming, Wikipedia][1]
 * [Goto, Wikipedia][2]
@@ -409,3 +428,4 @@ Return value of a pure function depends only on its input arguments, and it alwa
 * [Code Refactoring, Wikipedia][16]
 * [Pure Function, Wikipedia][17]
 * [Immutable Object, Wikipedia][18]
+* [Destructuring Assignment, Mozilla Developers Network][19]
