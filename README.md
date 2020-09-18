@@ -372,7 +372,7 @@ const calcSalary = (netIncome: number, bonusIncomes: number, taxes: number) {
 }
 ```
 
-Removing duplicate code by extracting it subroutines (procedures and functions) is another form of refactoring.
+Removing duplicate code by extracting it to subroutines (procedures and functions) is another form of refactoring.
 
 Inconsistent code style includes bad variable and function naming, but it also refers to code indentation, column caps, file structure, and codebase structure.
 
